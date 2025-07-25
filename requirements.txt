@@ -1,0 +1,24 @@
+# GUI Framework
+customtkinter>=5.2.0
+
+# HTTP Requests
+requests>=2.31.0
+
+# Cryptography for API key encryption
+cryptography>=41.0.0
+
+# Standard library modules (included with Python)
+# - csv
+# - os
+# - subprocess
+# - ipaddress
+# - threading
+# - webbrowser
+# - json
+# - datetime
+# - pathlib
+# - shutil
+# - time
+# - platform
+# - ctypes
+# - tkinter (included with most Python installations)
