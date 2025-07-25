@@ -1,43 +1,46 @@
-# Virtual Environment
+# === Byte-compiled and cache files ===
+__pycache__/
+*.py[cod]
+*$py.class
+
+# === Virtual environment ===
 venv/
 env/
 ENV/
 
-# Build artifacts
-dist/
+# === PyInstaller build directories ===
 build/
-*.spec
+dist/
 
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-
-# Testing
-.pytest_cache/
-**/__init__.py
-.coverage
-htmlcov/
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
+# === OS-specific files ===
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# User data
+# === Log and temporary files ===
 *.log
-cache/
-temp/
-user_data/
+*.tmp
+*.bak
+*.old
 
-# Sensitive files (if any)
-config.ini
-secrets.json
-api_keys.txt
+# === Editor/IDE configuration ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === Test and coverage files ===
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.tox/
+nosetests.xml
+
+# === System merge files ===
+*.orig
+*.rej
+
+# === Build outputs (do not version built executables) ===
+dist/VirusTotal-IP-Analyzer-Windows.exe
+dist/linux/virustotal-ip-analyzer-linux

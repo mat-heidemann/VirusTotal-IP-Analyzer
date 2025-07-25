@@ -3,14 +3,14 @@
 A comprehensive network security tool that scans external IP connections, analyzes them using VirusTotal API, and provides IP blocking capabilities across Windows and Linux systems.
 
 ![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey.svg)
+![License](https://img.shields.io/badge/license-GPL%20v3-green.svg)
 
 ## ✨ Features
 
 ### 🔍 **Network Analysis**
 - **Real-time Network Scanning**: Automatically detects external IP connections
-- **Cross-platform Support**: Works on Windows, Linux, and macOS
+- **Cross-platform Support**: Works on Windows and Linux
 - **Process Identification**: Shows which processes are connecting to external IPs
 - **Smart Filtering**: Ignores local/private IP ranges and focuses on external threats
 
@@ -25,7 +25,6 @@ A comprehensive network security tool that scans external IP connections, analyz
 - **Multi-platform Blocking**: 
   - **Windows**: Uses Windows Firewall (netsh)
   - **Linux**: Uses iptables with sudo privileges
-  - **macOS**: Uses pfctl packet filtering
 - **Persistent Rules**: Automatically saves firewall rules across reboots
 - **Visual Indicators**: Blocked IPs show with 🚫 icons and red highlighting
 - **Easy Management**: One-click block/unblock functionality
@@ -47,13 +46,13 @@ A comprehensive network security tool that scans external IP connections, analyz
 
 ### Option 1: Use Pre-built Executables
 
-1. **Download** the appropriate executable:
-   - **Windows**: `VirusTotal-IP-Analyzer-Windows.exe`
-   - **Linux**: `virustotal-ip-analyzer-linux`
+1. **Download** the appropriate executable from the `dist/` folder:
+   - **Windows**: `dist/VirusTotal-IP-Analyzer-Windows.exe`
+   - **Linux**: `dist/linux/virustotal-ip-analyzer-linux`
 
 2. **Run** the executable:
    - **Windows**: Double-click the .exe file
-   - **Linux**: `./virustotal-ip-analyzer-linux`
+   - **Linux**: `./dist/linux/virustotal-ip-analyzer-linux`
 
 3. **Set API Key**: Click "🔑 Set/Update API Key" and enter your VirusTotal API key
 
@@ -61,9 +60,25 @@ A comprehensive network security tool that scans external IP connections, analyz
 
 ### Option 2: Run from Source
 
+#### Using Run Scripts (Recommended)
+
+**Windows:**
+```cmd
+# Double-click or run from command prompt
+scripts\run_windows.bat
+```
+
+**Linux:**
+```bash
+# Make executable and run
+chmod +x scripts/run_linux.sh
+bash scripts/run_linux.sh
+```
+
+#### Manual Setup
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/mat-heidemann/VirusTotal-IP-Analyzer
 cd VirusTotal-IP-Analyzer
 
 # Create virtual environment
@@ -72,7 +87,7 @@ python -m venv venv
 # Activate virtual environment
 # Windows:
 venv\Scripts\activate
-# Linux/macOS:
+# Linux:
 source venv/bin/activate
 
 # Install dependencies
@@ -87,21 +102,66 @@ python main.py
 ### Windows
 ```batch
 # Run the build script
-build_windows.bat
+scripts\build_windows.bat
 ```
 
 ### Linux
 ```bash
 # Make executable and run
-chmod +x build_linux.sh
-./build_linux.sh
+chmod +x scripts/build_linux.sh
+bash scripts/build_linux.sh
 ```
 
 **Output locations:**
-- Windows: `dist/windows/VirusTotal-IP-Analyzer-Windows.exe`
+- Windows: `dist/VirusTotal-IP-Analyzer-Windows.exe`
 - Linux: `dist/linux/virustotal-ip-analyzer-linux`
 
-For detailed build instructions, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md).
+For detailed build instructions, see [docs/BUILD_INSTRUCTIONS.md](docs/BUILD_INSTRUCTIONS.md).
+
+## 📁 Project Structure
+
+```
+VirusTotal-IP-Analyzer/
+├── main.py                          # Application entry point
+├── requirements.txt                 # Python dependencies
+├── VirusTotal-IP-Analyzer.spec     # PyInstaller build configuration
+├── README.md                       # This file
+├── TROUBLESHOOTING.md             # Common issues and solutions
+├── assets/                        # Application assets
+│   ├── icon.ico                   # Windows icon
+│   └── icon.png                   # Linux icon
+├── docs/                          # Documentation
+│   ├── BUILD_INSTRUCTIONS.md      # Detailed build guide
+│   ├── PROJECT_STRUCTURE.md       # Architecture documentation
+│   └── README.md                  # Original documentation
+├── scripts/                       # Build and run scripts
+│   ├── build_windows.bat          # Windows build script
+│   ├── build_linux.sh             # Linux build script
+│   ├── run_windows.bat             # Windows run script
+│   ├── run_linux.sh               # Linux run script (enhanced)
+│   └── run.sh                     # Linux run script (simple)
+├── src/                           # Source code
+│   ├── core/                      # Core functionality
+│   │   ├── api_client.py          # VirusTotal API integration
+│   │   ├── cache_manager.py       # Data persistence and caching
+│   │   ├── config.py              # Application configuration
+│   │   ├── encryption.py          # API key encryption/decryption
+│   │   ├── ip_blocker.py          # Cross-platform IP blocking
+│   │   ├── network_scanner.py     # Network connection detection
+│   │   └── scanner.py             # Scan coordination and management
+│   └── gui/                       # User interface components
+│       ├── api_key_dialog.py      # API key management dialog
+│       ├── custom_dialogs.py      # Custom themed dialogs
+│       ├── main_window.py         # Main application window
+│       ├── results_window.py      # Scan results display
+│       └── utils.py               # GUI utility functions
+├── tests/                         # Test files
+│   └── test_network_scan.py       # Network scanning tests
+└── dist/                          # Built executables (after building)
+    ├── VirusTotal-IP-Analyzer-Windows.exe  # Windows executable
+    └── linux/
+        └── virustotal-ip-analyzer-linux    # Linux executable
+```
 
 ## 📋 Requirements
 
@@ -126,7 +186,6 @@ For detailed build instructions, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.
 ### Application Settings
 - **Windows**: `%APPDATA%\VT_IP_Analyzer\`
 - **Linux**: `~/.config/vt-ip-analyzer/`
-- **macOS**: `~/Library/Application Support/VT_IP_Analyzer/`
 
 ### Configuration Files
 - `encrypted_api_key.key` - Encrypted VirusTotal API key
@@ -181,30 +240,36 @@ For detailed build instructions, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.
 
 **"Permission denied" (Linux)**
 - IP blocking requires sudo privileges
-- Run: `sudo ./virustotal-ip-analyzer-linux`
+- Run: `sudo ./dist/linux/virustotal-ip-analyzer-linux`
 - Or use: `sudo python main.py`
 
 **Build Issues**
 - Ensure Python 3.8+ is installed
 - Update pip: `pip install --upgrade pip`
-- See [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for details
+- See [docs/BUILD_INSTRUCTIONS.md](docs/BUILD_INSTRUCTIONS.md) for details
+
+**Character Encoding Issues (Windows)**
+- The build and run scripts use ASCII-compatible characters
+- If you see strange characters, ensure you're using Command Prompt or PowerShell
+
+For more detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
 ## 🏗️ Architecture
 
 ### Core Components
 - **`main.py`** - Application entry point
-- **`gui/`** - User interface components
-- **`scanner.py`** - Scan coordination and management
-- **`api_client.py`** - VirusTotal API integration
-- **`network_scanner.py`** - Network connection detection
-- **`ip_blocker.py`** - Cross-platform IP blocking
-- **`cache_manager.py`** - Data persistence and caching
-- **`encryption.py`** - API key encryption/decryption
-- **`config.py`** - Application configuration
+- **`src/gui/`** - User interface components
+- **`src/core/scanner.py`** - Scan coordination and management
+- **`src/core/api_client.py`** - VirusTotal API integration
+- **`src/core/network_scanner.py`** - Network connection detection
+- **`src/core/ip_blocker.py`** - Cross-platform IP blocking
+- **`src/core/cache_manager.py`** - Data persistence and caching
+- **`src/core/encryption.py`** - API key encryption/decryption
+- **`src/core/config.py`** - Application configuration
 
 ### Design Principles
 - **Modular Architecture**: Clear separation of concerns
-- **Cross-platform Compatibility**: Works on Windows, Linux, macOS
+- **Cross-platform Compatibility**: Works on Windows and Linux
 - **Security First**: Encrypted storage, secure API handling
 - **User Experience**: Intuitive GUI with real-time feedback
 - **Performance**: Efficient caching and threading
@@ -223,13 +288,21 @@ For detailed build instructions, see [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.
 - **IP Blocking**: Instant (system firewall rules)
 - **Memory Usage**: ~50-100MB
 
-## 🤝 Contributing
+## 🔧 Development
 
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+### Available Scripts
+
+| Script | Platform | Purpose |
+|--------|----------|---------|
+| `scripts/build_windows.bat` | Windows | Build Windows executable |
+| `scripts/build_linux.sh` | Linux | Build Linux executable |
+| `scripts/run_windows.bat` | Windows | Run from source (enhanced) |
+| `scripts/run_linux.sh` | Linux | Run from source (enhanced) |
+| `scripts/run.sh` | Linux | Run from source (simple) |
 
 ### Development Setup
 ```bash
-git clone <repository-url>
+git clone https://github.com/mat-heidemann/VirusTotal-IP-Analyzer
 cd VirusTotal-IP-Analyzer
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
@@ -237,9 +310,29 @@ pip install -r requirements.txt
 python main.py
 ```
 
+### Building Process
+The build process uses PyInstaller with a unified `.spec` file that handles both Windows and Linux builds:
+
+1. **Creates virtual environment** in appropriate location
+2. **Installs dependencies** including PyInstaller
+3. **Builds executable** using platform-specific settings
+4. **Handles permissions** and WSL limitations
+5. **Provides detailed feedback** throughout the process
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
+
+### Contribution Guidelines
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test on both Windows and Linux if possible
+5. Submit a pull request
+
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the GNU General Public License v3.0 - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
@@ -250,10 +343,12 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For support, please:
-1. Check the [BUILD_INSTRUCTIONS.md](BUILD_INSTRUCTIONS.md) for build issues
-2. Review the troubleshooting section above
-3. Open an issue on the project repository
+1. Check the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues
+2. Review the [docs/BUILD_INSTRUCTIONS.md](docs/BUILD_INSTRUCTIONS.md) for build issues
+3. Open an issue on the [project repository](https://github.com/mat-heidemann/VirusTotal-IP-Analyzer)
 
 ---
 
 **⚠️ Disclaimer**: This tool is for legitimate security analysis only. Users are responsible for complying with applicable laws and regulations when using IP blocking features.
+
+**🔗 Repository**: https://github.com/mat-heidemann/VirusTotal-IP-Analyzer
