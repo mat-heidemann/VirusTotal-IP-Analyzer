@@ -5,8 +5,6 @@ echo ========================================
 echo  VirusTotal IP Analyzer - Windows Build
 echo ========================================
 
-REM === Color definitions (Windows doesn't support colors in basic cmd, but we'll use clear messaging) ===
-
 REM Move to the project root directory
 cd /d "%~dp0\.."
 echo → Switched to project root: %CD%
@@ -37,7 +35,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM === Remove any previous broken venv ===
+REM === Recreate virtual environment ===
 echo.
 echo [*] Recreating virtual environment...
 if exist "venv\" (
@@ -49,7 +47,6 @@ echo Creating new virtual environment...
 python -m venv venv
 if errorlevel 1 (
     echo [X] Failed to create virtual environment.
-    echo Please check your Python installation.
     pause
     exit /b 1
 )
@@ -80,19 +77,10 @@ echo [+] pip !PIP_VERSION! available
 REM === Install dependencies ===
 echo.
 echo [*] Installing requirements...
-echo Upgrading pip...
 pip install --upgrade pip
-if errorlevel 1 (
-    echo [X] Failed to upgrade pip.
-    pause
-    exit /b 1
-)
-
-echo Installing project dependencies...
 pip install -r requirements.txt
 if errorlevel 1 (
-    echo [X] Failed to install requirements.
-    echo Please check requirements.txt and your internet connection.
+    echo [X] Failed to install dependencies.
     pause
     exit /b 1
 )
@@ -110,23 +98,18 @@ if errorlevel 1 (
 REM === Clean previous build artifacts ===
 echo.
 echo [*] Cleaning old build files...
-if exist "dist\" (
-    echo Removing dist directory...
-    rmdir /s /q dist
-)
-if exist "build\" (
-    echo Removing build directory...
-    rmdir /s /q build
-)
-if exist "main.spec" (
-    echo Removing old spec file...
-    del main.spec
-)
+if exist "dist\Windows\" rmdir /s /q dist\Windows
+if exist "build\" rmdir /s /q build
 
 REM === Build executable ===
 echo.
 echo [*] Building Windows executable...
-pyinstaller --distpath "dist" --workpath "build" --noconfirm --clean VirusTotal-IP-Analyzer.spec
+pyinstaller ^
+    --distpath "dist\Windows" ^
+    --workpath "build" ^
+    --noconfirm ^
+    --clean ^
+    VirusTotal-IP-Analyzer.spec
 set BUILD_EXIT_CODE=!errorlevel!
 
 REM Check if build succeeded despite any warnings
@@ -137,12 +120,11 @@ if !BUILD_EXIT_CODE! neq 0 (
 REM === Check result ===
 echo.
 echo [*] Verifying build...
-if exist "dist\VirusTotal-IP-Analyzer-Windows.exe" (
+if exist "dist\Windows\VirusTotal-IP-Analyzer-Windows.exe" (
     echo [+] BUILD SUCCESSFUL!
-    echo Executable: dist\VirusTotal-IP-Analyzer-Windows.exe
+    echo Executable: dist\Windows\VirusTotal-IP-Analyzer-Windows.exe
     
-    REM Get file size
-    for %%A in ("dist\VirusTotal-IP-Analyzer-Windows.exe") do (
+    for %%A in ("dist\Windows\VirusTotal-IP-Analyzer-Windows.exe") do (
         set FILE_SIZE=%%~zA
         echo Size: !FILE_SIZE! bytes
     )
@@ -161,18 +143,13 @@ if exist "dist\VirusTotal-IP-Analyzer-Windows.exe" (
 REM === Cleanup ===
 echo.
 echo [*] Cleaning temporary files...
-if exist "build\" (
-    echo Removing build directory...
-    rmdir /s /q build
-)
+if exist "build\" rmdir /s /q build
 
 REM === Optional: remove venv ===
 echo [*] Removing virtual environment...
-if exist "venv\" (
-    rmdir /s /q venv
-)
+if exist "venv\" rmdir /s /q venv
 
 echo.
-echo [+] Build process completed successfully!
+echo 🎉 Build process completed successfully!
 echo.
 pause
